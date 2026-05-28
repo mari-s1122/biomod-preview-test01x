@@ -73,15 +73,14 @@
                     var parser = new DOMParser();
                     var doc = parser.parseFromString(html, 'text/html');
                     
-                    // 【自動化の核心】news.htmlの中にある最初（一番上）のtimeタグとaccordion-buttonを自動検知
-                    var latestDateElement = doc.querySelector('.accordion-item time');
-                    var latestTitleElement = doc.querySelector('.accordion-item .accordion-button');
+                    // 【強化ポイント】タグの階層に関係なく、news.htmlの中にある「最初のtime」と「最初のbutton」を狙い撃ち
+                    var latestDateElement = doc.querySelector('time');
+                    var latestTitleElement = doc.querySelector('.accordion-button');
                     
-                    // 中身の文字を抜き出す
                     var latestDate = latestDateElement ? latestDateElement.textContent.trim() : '';
                     var latestTitle = latestTitleElement ? latestTitleElement.textContent.trim() : '';
                     
-                    // トップページの表示を書き換える
+                    // 取得できていればトップページの文字を書き換える
                     if (latestDate) {
                         document.getElementById('top-news-date').textContent = latestDate;
                     }
@@ -90,6 +89,7 @@
                     }
                 })
                 .catch(error => {
+                    console.error("エラー詳細:", error);
                     document.getElementById('top-news-title').textContent = "最新のニュースはこちらからご確認ください。";
                 });
         });
