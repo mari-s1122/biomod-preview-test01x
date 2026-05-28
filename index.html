@@ -65,32 +65,34 @@
         <small>&copy; 2026 BIOMOD Team Science Tokyo</small>
     </footer>
 
-    <!-- ▼ ここから自動連動のスクリプトを追加 ▼ -->
-    <script>
+<script>
         window.addEventListener('DOMContentLoaded', function() {
-            // 裏側でnews.htmlを読みに行く
             fetch('news.html')
                 .then(response => response.text())
                 .then(html => {
-                    // 読み込んだHTMLから仮想の画面を作る
                     var parser = new DOMParser();
                     var doc = parser.parseFromString(html, 'text/html');
-                    // news.htmlにつけた目印（id）の文字を抜き出す
-                    var latestTitle = doc.getElementById('latest-news-title').textContent.trim();
                     
-                    // トップページの「Loading...」を最新タイトルに書き換える
+                    // 【自動化の核心】news.htmlの中にある最初（一番上）のtimeタグとaccordion-buttonを自動検知
+                    var latestDateElement = doc.querySelector('.accordion-item time');
+                    var latestTitleElement = doc.querySelector('.accordion-item .accordion-button');
+                    
+                    // 中身の文字を抜き出す
+                    var latestDate = latestDateElement ? latestDateElement.textContent.trim() : '';
+                    var latestTitle = latestTitleElement ? latestTitleElement.textContent.trim() : '';
+                    
+                    // トップページの表示を書き換える
+                    if (latestDate) {
+                        document.getElementById('top-news-date').textContent = latestDate;
+                    }
                     if (latestTitle) {
-                        document.getElementById('top-news-link').textContent = latestTitle;
+                        document.getElementById('top-news-title').textContent = latestTitle;
                     }
                 })
                 .catch(error => {
-                    // エラーが起きた場合のバックアップ表示
-                    document.getElementById('top-news-link').textContent = "最新のニュースはこちらからご確認ください。";
+                    document.getElementById('top-news-title').textContent = "最新のニュースはこちらからご確認ください。";
                 });
         });
     </script>
-    <!-- ▲ ここまで ▲ -->
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
